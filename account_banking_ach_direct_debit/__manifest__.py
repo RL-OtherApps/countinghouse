@@ -11,7 +11,7 @@
     'website': 'https://github.com/thinkwelltwd/countinghouse',
     'category': 'Banking addons',
     'depends': [
-        'account_banking_mandate',
+        'account_banking_mandate_sale',
         'countinghouse_ach_base',
     ],
     'data': [
