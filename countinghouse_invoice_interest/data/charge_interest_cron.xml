@@ -8,8 +8,8 @@
         <field name="numbercall">-1</field>
         <field name="nextcall" eval="(DateTime.now() + timedelta(days= +1)).strftime('%Y-%m-%d 2:15:05')"/>
         <field name="doall" eval="False"/>
-        <field name="model" eval="'account.invoice'"/>
-        <field name="function" eval="'cron_add_interest_charges'"/>
+        <field name="model_id" ref="model_account_invoice"/>
+        <field name="code" eval="account_invoice.cron_add_interest_charges"/>
         <field name="args" eval="'()'"/>
     </record>
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from odoo import api, models, fields
 from odoo.exceptions import UserError
 from stdnum.us import ssn, ein

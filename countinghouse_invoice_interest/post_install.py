@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 def set_charge_date(cr, registry):
     cr.execute("""
