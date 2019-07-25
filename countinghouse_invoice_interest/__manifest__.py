@@ -4,7 +4,7 @@
 {
     'name': 'Add interest charges to overdue invoices.',
     'summary': 'Add interest charges to overdue invoices.',
-    'version': '11.0.1.0.0',
+    'version': '12.0.1.0.0',
     'license': 'AGPL-3',
     'author': 'Thinkwell Designs',
     'website': 'https://github.com/thinkwelltwd/countinghouse',
