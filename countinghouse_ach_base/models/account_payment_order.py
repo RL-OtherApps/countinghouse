@@ -23,13 +23,15 @@ class AccountPaymentOrder(models.Model):
         ACH file_id_mod should be 'A' for the first of the day,
         'B' for the second and so on.
         """
-        ach_transactions_today = self.env['account.payment.order'].search_count([
-            ('create_date', '>=', fields.Date.today()),
-            ('company_partner_bank_id', '=', self.company_partner_bank_id.id),
-            ('state', 'in', ['generated', 'uploaded']),
-            ('payment_mode_id.payment_method_id.code', 'in', ['ACH-In', 'ACH-Out']),
-        ])
-
+        ach_transactions_today =\
+            self.env['account.payment.order'].search_count([
+                ('create_date', '>=', fields.Date.today()),
+                ('company_partner_bank_id', '=',
+                 self.company_partner_bank_id.id),
+                ('state', 'in', ['generated', 'uploaded']),
+                ('payment_mode_id.payment_method_id.code', 'in',
+                 ['ACH-In', 'ACH-Out'])
+            ])
         return ascii_uppercase[ach_transactions_today]
 
     def ach_settings(self):
@@ -39,13 +41,12 @@ class AccountPaymentOrder(models.Model):
 
         if not legal_id_number:
             raise UserError(
-                '%s does not have an EIN / SSN / BN assigned!' % self.company_id.name
-            )
+                _('%s does not have an EIN / SSN / BN '
+                  'assigned!' % self.company_id.name))
 
         if not routing_number:
             raise UserError(
-                '%s does not have a Routing Number assigned!' % bank.name
-            )
+                _('%s does not have a Routing Number assigned!' % bank.name))
 
         return {
             'immediate_dest': self.company_partner_bank_id.acc_number,
@@ -58,13 +59,13 @@ class AccountPaymentOrder(models.Model):
     def validate_banking(self, line):
         if not line.partner_bank_id.bank_id:
             raise UserError(
-                _('%s account number has no Bank assigned' % line.partner_bank_id.acc_number)
-            )
+                _('%s account number has no Bank '
+                  'assigned' % line.partner_bank_id.acc_number))
 
         if not line.partner_bank_id.bank_id.routing_number:
             raise UserError(
-                _('%s has no routing number specified' % line.partner_bank_id.bank_id.name)
-            )
+                _('%s has no routing number '
+                  'specified' % line.partner_bank_id.bank_id.name))
 
     def validate_mandates(self, line):
         """Ensure that mandates are correctly set"""
@@ -80,16 +81,15 @@ class AccountPaymentOrder(models.Model):
                   "for partner '%s' has expired.")
                 % (line.mandate_id.unique_mandate_reference,
                    line.mandate_id.partner_id.name))
-        if line.mandate_id.type == 'oneoff':
-            if line.mandate_id.last_debit_date:
-                raise Warning(
-                    _("The mandate with reference '%s' for partner "
-                      "'%s' has type set to 'One-Off' and it has a "
-                      "last debit date set to '%s', so we can't use "
-                      "it.")
-                    % (line.mandate_id.unique_mandate_reference,
-                       line.mandate_id.partner_id.name,
-                       line.mandate_id.last_debit_date))
+        if line.mandate_id.type == 'oneoff' and \
+                line.mandate_id.last_debit_date:
+            raise Warning(
+                _("The mandate with reference '%s' for partner "
+                  "'%s' has type set to 'One-Off' and it has a "
+                  "last debit date set to '%s', so we can't use "
+                  "it.") % (line.mandate_id.unique_mandate_reference,
+                            line.mandate_id.partner_id.name,
+                            line.mandate_id.last_debit_date))
 
     def get_transaction_type(self, amount):
         if not amount:
@@ -132,7 +132,7 @@ class AccountPaymentOrder(models.Model):
                 }],
             })
 
-        credits = self.payment_type == 'outbound'
-        ach_file.add_batch('PPD', entries, credits=credits, debits=inbound_payment)
-
+        outbound_payment = self.payment_type == 'outbound'
+        ach_file.add_batch('PPD', entries, credits=outbound_payment,
+                           debits=inbound_payment)
         return ach_file.render_to_string(), filename

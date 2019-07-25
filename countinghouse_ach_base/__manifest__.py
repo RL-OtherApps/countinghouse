@@ -4,7 +4,7 @@
 {
     'name': 'Localizations for North American Banking & Financials',
     'summary': 'Add fields required for North American Banking & Financials',
-    'version': '11.0.1.0.0',
+    'version': '12.0.1.0.0',
     'license': 'AGPL-3',
     'author': 'Thinkwell Designs',
     'website': 'https://github.com/thinkwelltwd/countinghouse',

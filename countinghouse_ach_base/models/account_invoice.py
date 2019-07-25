@@ -1,5 +1,5 @@
 from datetime import date, timedelta
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
 
@@ -20,8 +20,8 @@ class AccountInvoice(models.Model):
 
             if today < delay_expired:
                 raise UserError(
-                    'To satisfy payment mandate, cannot add invoice %s to Debit Order until %s!' %
-                    (invoice.number, delay_expired.strftime('%Y-%m-%d'))
-                )
+                    _('To satisfy payment mandate, cannot add invoice %s to '
+                      'Debit Order until %s!' %
+                      (invoice.number, delay_expired.strftime('%Y-%m-%d'))))
 
         return super(AccountInvoice, self).create_account_payment_line()
